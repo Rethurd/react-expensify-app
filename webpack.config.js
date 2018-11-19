@@ -3,7 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = (env) => {
   const isProduction = env === 'production';
-  const CSSExtract = new ExtractTextPlugin('styles.css');
+  const CSSExtract = new ExtractTextPlugin('styles.css'); // where to put the extracted css files
 
   return {
     entry: './src/app.js',
