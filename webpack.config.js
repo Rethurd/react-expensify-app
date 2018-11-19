@@ -1,32 +1,48 @@
-// entry -> output
-const path = require('path'); //node.js function
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+module.exports = (env) => {
+  const isProduction = env === 'production';
+  const CSSExtract = new ExtractTextPlugin('styles.css');
 
-module.exports ={
-    entry:'./src/app.js',
-    output:{
-        path:path.join(__dirname,'public'),  //this has to be an absolute path
-        filename:'bundle.js'
+  return {
+    entry: './src/app.js',
+    output: {
+      path: path.join(__dirname, 'public'),
+      filename: 'bundle.js'
     },
-    module:{
-        rules:[{
-            loader:'babel-loader', //WHICH LOADER TO RUN
-            test: /\.js$/,  //ON WHAT TO RUN IT
-            exclude: /node_modules/           
-        },{
-            test:/\.s?css$/,
-            use:[       // we can set up an array of loaders
-                'style-loader',
-                'css-loader',
-                'sass-loader'
-            ]
-        }]  
+    module: {
+      rules: [{
+        loader: 'babel-loader',
+        test: /\.js$/,
+        exclude: /node_modules/
+      }, {
+        test: /\.s?css$/,
+        use: CSSExtract.extract({
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true
+              }
+            }
+          ]
+        })
+      }]  
     },
-    devtool: 'cheap-module-eval-source-map',
-    devServer:{
-        contentBase:path.join(__dirname,'public'),
-        historyApiFallback:true
+    plugins: [
+      CSSExtract
+    ],
+    devtool: isProduction ? 'source-map' : 'inline-source-map',
+    devServer: {
+      contentBase: path.join(__dirname, 'public'),
+      historyApiFallback: true
     }
-}
-
-//loader - a way how a file gets transformed when webpack uses it 
+  };
+};
