@@ -55,3 +55,27 @@ type:'EDIT_EXPENSE',
 id,
 updates
 });
+
+export const setExpenses = (expenses) =>({
+    type:'SET_EXPENSES',
+    expenses
+});
+
+export const startSetExpenses = () =>{
+    
+    return (dispatch)=>{
+        
+        return database.ref('expenses').once('value').then((snapshot)=>{
+            const setExpensesArray=[];
+            snapshot.forEach((childSnapshot)=>{
+                const expense = {
+                    id:childSnapshot.key,
+                    ...childSnapshot.val()
+                }
+                setExpensesArray.push(expense);
+            })
+            dispatch(setExpenses(setExpensesArray));
+        });
+
+    }
+}

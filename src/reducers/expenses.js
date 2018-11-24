@@ -18,7 +18,8 @@ export default (state = expensesReducerDefaultState,action)=>{ //action is the F
                     return expense; // no change (dont have to write the else at all)
                 }
             });
-        
+        case 'SET_EXPENSES':
+            return action.expenses;
         default:
             return state;
     }
